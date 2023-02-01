@@ -1,0 +1,37 @@
+recipe: default.v1
+
+language: en
+
+pipeline:
+  - name: SpacyNLP
+    model: en_core_web_md
+  - name: EntitySynonymMapper
+  - name: SpacyTokenizer
+  - name: SpacyFeaturizer
+  - name: RegexFeaturizer
+  - name: LexicalSyntacticFeaturizer
+  - name: CountVectorsFeaturizer
+  - name: CountVectorsFeaturizer
+    analyzer: "char_wb"
+    min_ngram: 1
+    max_ngram: 4
+  - name: DIETClassifier
+    epochs: 100
+    constrain_similarities: yes
+  - name: ResponseSelector
+    epochs: 100
+
+policies:
+  - name: TEDPolicy
+    max_history: 15
+    epochs: 70
+    constrain_similarities: yes
+  - name: AugmentedMemoizationPolicy
+    max_history: 12
+  - name: RulePolicy
+  - name: UnexpecTEDIntentPolicy
+    epochs: 2
+    nlu_threshold: 0.3
+    ambiguity_threshold: 0.1
+    core_threshold: 0.3
+    fallback_action_name: 'action_default_fallback'
